@@ -1,6 +1,8 @@
 # ThreadManager
 
-Simple concurrency manager for Go.
+ThreadManager provides a simple way to manage concurrent threads in Go.
+
+Below you will find basic infomation on Golang concurrency and how to use it effectively as well as a description of the ThreadManager package with its methods, exmaples and use cases.
 
 ## Concurrency in Go
 
@@ -84,3 +86,96 @@ Here are some good opportunities to introduce concurrency in your Go programs:
 - Handling requests concurrently - launch a goroutine per request
 
 Overusing concurrency can add unnecessary complexity so only reach for it when you have an appropriate use case. Overall it's a powerful tool for building efficient and scalable applications in Go.
+
+## Uasge
+
+Import the package:
+
+```go
+import "github.com/AndrewDonelson/threadmanager"
+```
+
+Create a new ThreadManager:
+
+```go
+tm := threadmanager.New()
+```
+
+Add a task to the ThreadManager:
+
+```go
+tm.AddThread("thread1", func() {
+  // do work
+}, 1000) // 1 second timing
+```
+
+The function can accept parameters:
+
+```go
+tm.AddThread("thread2", func(msg string) {
+  fmt.Println(msg)
+}, 500)
+```
+
+Start threads by name:
+
+```go
+tm.StartThread("thread1")
+tm.StartThread("thread2", "Hello!")
+```
+
+Stop threads gracefully:
+
+```go
+tm.StopThread("thread1")
+```
+
+Wait for threads to finish:
+
+```go
+tm.wg.Wait()
+```
+
+Thread Struct
+
+The Thread struct contains:
+
+Name - unique name
+Fn - function to run
+Timing - milliseconds between invocations
+Logs - log messages
+
+Examples
+
+Run two threads with different intervals:
+
+```go
+tm := threadmanager.New()
+
+tm.AddThread("thread1", func() {
+  // do work
+}, 1500) // 1.5 second interval
+
+tm.AddThread("thread2", func() {
+  // do other work
+}, 250) // 0.25 second interval  
+
+tm.StartThread("thread1")
+tm.StartThread("thread2")
+
+// Threads run concurrently
+
+tm.StopThread("thread1")
+tm.StopThread("thread2")
+```
+
+Pass parameters to threads:
+
+```go
+tm.AddThread("print", func(msg string) {
+  fmt.Println(msg) 
+}, 0)
+
+tm.StartThread("print", "Hello World!")
+```
+
